@@ -1,0 +1,19 @@
+{% extends "myapp/base.html" %}
+{% block title %}friends{% endblock %}
+{% block header-title %}友達{% endblock %}
+
+{% block content %}
+<div class="friends">
+    {% for %}
+    <div class="each">
+        <div class="icon"></div>
+        <div class="detail">
+            <div class="name"></div>
+            <div class="talk"></div>
+        </div>
+    </div>
+    {% empty %}
+        <p class="empty">現在友達はいません</p>
+    {% endfor %}
+</div>  
+{% endblock %}

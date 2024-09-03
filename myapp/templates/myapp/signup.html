@@ -1,1 +1,14 @@
-SU
+{% extends "myapp/base.html" %}
+{% block title %}signup{% endblock %}
+{% block header-title %}会員登録{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p}}
+            <button type="submit">submit</button>
+        </form>
+    </div>
+{% endblock %}
+{% block footer %} {% endblock %}
