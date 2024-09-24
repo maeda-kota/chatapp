@@ -1,23 +1,24 @@
-.each {
+ul {
+    border-bottom: solid 1px black;
+}
+
+.forms {
+    display: flex;
+}
+
+p {
+    font-size: 120%;
+}
+
+.button {
     border: solid 2px gray;
     border-radius: 15%;
     background-color: #fff;
     padding: 2% 2%;
     text-align: center;
     font-size: 100%;
-    width: 27vw;
-    margin: 5cqh 27vw;
+    margin: 0 2% 1%;
     font-family: "Noto Sans JP", sans-serif;
-}
-
-.setting-container {
-    margin: 0 5%;
-    margin-top: 20vh;
-}
-
-.each-button {
-    text-decoration: none;
-    color: black;
 }
 
 button {

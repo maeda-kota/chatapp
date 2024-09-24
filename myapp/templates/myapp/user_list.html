@@ -1,0 +1,26 @@
+{% extends "myapp/base.html" %}
+
+{% block content %}
+  <h2>User List</h2>
+  <ul>
+    {% for user in users %}
+      <li>
+        <img src="../static/myapp/img/people-24px.svg" alt="{{ user.username }}" width="50">
+        {{ user.username }} - {{ user.email }}
+        {% if user.id in friend_id %}
+          <span>既にフレンドです</span>
+            {% for friend in friends %}
+              {% if friend.friend.id == user.id %}
+                <span>{{ friend.created_at }}</span>
+              {% endif %}
+            {% endfor %}
+        {% else %}
+          <form method="post" action="{% url 'send_friend_request' user.id %}">
+            {% csrf_token %}
+            <button type="submit">Send Friend Request</button>
+          </form>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

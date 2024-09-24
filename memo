@@ -1,0 +1,30 @@
+次はフロントの部分を編集していく！
+class usernameChanger(LoginRequiredMixin, View):
+
+
+class mailadressChanger(LoginRequiredMixin, TemplateView):
+
+class passowrdChanger(LoginRequiredMixin, TemplateView):
+class iconChanger(LoginRequiredMixin, TemplateView):
+class logout(LoginRequiredMixin, TemplateView):
+
+
+    <div class="mailadress">
+        <a href="{% url %}" class="mail-change"></a>
+    </div>
+    <div class="icon">
+        <a href="{% url %}" class="icon-change"></a>
+    </div>
+    <div class="password">
+        <a href="{% url %}" class="password-change"></a>
+    </div>
+    <div class="logout">
+        <a href="{% url 'index' %}" class="log-out"></a>
+    </div>
+
+
+    <p class="before">変更前　→　{{customuser.username}}</p>
+    <p class="after">
+            変更後のユーザー名　→　
+            <input type="text">
+        </p>

@@ -1,0 +1,15 @@
+.container {
+    margin: 40vh 13vw;
+}
+
+.login {
+    text-decoration: none;
+    color: black;
+    border: solid 2px gray;
+    border-radius: 15%;
+    background-color: #fff;
+    padding: 2% 2%;
+    text-align: center;
+    font-size: 150%;
+    width: 27vw;
+}

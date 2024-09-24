@@ -1,0 +1,16 @@
+{% extends "myapp/base.html" %}
+{% block title %}logout{% endblock %}
+{% load static %}
+{% block extra_style %}
+<link rel="stylesheet" href="../../static/myapp/css/logout.css">
+{% endblock %}
+
+{% block header-title %}ログアウトしました{% endblock %}
+
+{% block content %}
+<div class="container">
+    <p><a href="{% url 'index' %}" class="login">ログイン、会員登録画面へ</a></p>
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

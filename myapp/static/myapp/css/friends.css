@@ -1,0 +1,40 @@
+.to-talkroom {
+    text-decoration: none;
+    color: black;
+}
+
+.each {
+    display: flex;
+    border: 1px solid black;
+}
+
+.icon {
+    margin: 2% 2% 2% 1%;
+    border-radius: 50%;
+    border: 1px solid black;
+    padding: 0.5%;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    object-position: center center;
+}
+
+.detail {
+    margin-top: 0.5%;
+}
+
+.name {
+    margin-bottom: 5%;
+    font-size: 100%;
+}
+
+.empty {
+    text-align: center;
+    margin: 90% auto;
+}
+
+.message-info {
+   display: flex;
+   justify-content: space-between;
+   width: 70vw;
+}

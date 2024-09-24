@@ -1,0 +1,22 @@
+{% extends "myapp/base.html" %}
+{% block title %}afterChange{% endblock %}
+{% load static %}
+{% block extra_style %}
+<link rel="stylesheet" href="../../static/myapp/css/afterChange.css">
+{% endblock %}
+
+{% block header-title %}設定の変更が完了しました{% endblock %}
+
+{% block content %}
+<div class="afterChange">
+    <p class="content">
+        ホンマに変更したで。<br>
+        ほんとに。<br>
+        疑わんといてほしい。<br>
+        がちやから<br>
+        信用してな。<br>
+        いやホントは変更してない。<br>
+        ごめん嘘。変更した。めんどいからやめます。
+    </p>
+</div>
+{% endblock %}

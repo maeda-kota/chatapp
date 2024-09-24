@@ -1,0 +1,71 @@
+
+.header{
+    width: 100vw;
+    height: 64px;
+    border-bottom: solid 1px #9b9b9b;
+}
+
+.header-container-t {
+    background-color: #9b9b9b;
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.sender {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sender-time {
+    margin-right: 1%;
+}
+
+.return-button {
+    text-decoration: none;
+    border-bottom: none;
+    font-size: 120%;
+    color: black;
+    font-weight: bold;
+}
+
+
+.sender {
+    display: flex;
+}
+
+.message {
+    border-bottom: solid 1px #9b9b9b;
+}
+
+.form {
+    width: 100%;
+}
+
+.text {
+    width: 80%;
+    margin-top: 1%;
+}
+
+.submit {
+    margin-bottom: 1%;
+}
+
+.reload {
+    background: none;
+    border-radius: 40%;
+    font-size: 100%;
+}
+
+.submit {
+    background: none;
+    border-radius: 40%;
+    font-size: 100%;
+}
+
+.footer-container {
+    background-color: #ececec;
+}

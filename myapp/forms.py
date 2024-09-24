@@ -1,17 +1,12 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import CustomUser
-from django.contrib.auth.forms import AuthenticationForm
 
 class signupform(UserCreationForm):
     email = forms.EmailField(
         required=True,
         label='Emailadress'
     )
-
-    # img = forms.ImageField(
-    #     required=True    
-    # )
 
     class Meta:
         model = CustomUser
@@ -22,7 +17,28 @@ class signupform(UserCreationForm):
         self.fields['password1'].help_text = None
         self.fields['password2'].help_text = None
 
-# class LoginForm(AuthenticationForm):
+class LoginForm(AuthenticationForm):
+    class Meta:
+        model = CustomUser
 
-#     def__init__(self, *args, **kwargs):
-#     super().__init__(*args, **kwargs)
+class usernameChangeform(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ('username',)
+       
+class emailChangeform(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ('email',)
+
+class iconChangeform(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ('img',)
+
+class passwordChangeform(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ('password',)
+
+

@@ -1,1 +1,62 @@
-TR
+{% extends "myapp/base.html" %}
+{% block title %}talk_room{% endblock %}
+{% load static %}
+{% block extra_style %}
+<link rel="stylesheet" href="../../static/myapp/css/talk_room.css">
+{% endblock %}
+
+{% block header %}
+<header class="header">
+    <div class="header-container-t">
+        <div class="return">
+            <a href="{% url 'friends' %}" class="return-button">＜</a>
+        </div>
+        <div class="name">{{ friend.username }}</div>
+        <div class="reroad">
+            <form method="get">
+                <button type="submit" class="reload">更新</button>
+            </form>
+        </div>
+    </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="chat-room">
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message">
+            <div class="sender">
+                <div class="sender-name">
+                    <strong>＞{{ message.from_user.username }}:</strong>
+                </div>
+                <div class="sender-time">
+                    <div>
+                        {{ message.timestamp|date:"m/d" }}
+                    </div>
+                    <div>
+                        {{ message.timestamp|date:"H:i" }}
+                    </div>
+
+                </div>
+            </div>
+            <div class="send-messeage">
+             {{ message.content }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block footer %}
+<footer class="footer">
+    <div class="footer-container">
+        <form method="post" class="form">
+            {% csrf_token %}
+            <textarea class="text" name="message" placeholder="メッセージを入力してください..."></textarea>
+            <button type="submit" class="submit">送信</button>
+        </form>
+    </div>
+</footer>
+{% endblock %}
+

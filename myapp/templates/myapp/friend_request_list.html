@@ -1,0 +1,32 @@
+{% extends "myapp/base.html" %}
+{% block title %}friends_request_list{% endblock %}
+{% block header-title %}フレンド申請一覧{% endblock %}
+{% load static %}
+{% block extra_style %}
+<link rel="stylesheet" href="../../static/myapp/css/friend_request.css">
+{% endblock %}
+{% block content %}
+<ul>
+    {% for request in received_requests %}
+    <li>
+        <div class="request-container"> 
+            <div class="sender">   
+                <p>{{ request.sender.username }} -{{ request.created_at }}</p>
+            </div> 
+            <div class="forms">
+                <form class="button" method="post" action="{% url 'judge_friend_request' request.id 'accept' %}">
+                    {% csrf_token %}
+                    <button type="submit">承認</button>
+                </form>
+                <form class="button" method="post" action="{% url 'judge_friend_request' request.id 'reject' %}">
+                    {% csrf_token %}
+                    <button type="submit">拒否</button>
+                </form>
+            </div>
+        </div>
+    </li>
+    {% empty %}
+        <p class="empty">現在友達申請は来ていません</p>
+    {% endfor %}
+</ul>
+{% endblock %}
