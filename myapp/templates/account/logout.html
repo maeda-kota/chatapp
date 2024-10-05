@@ -1,0 +1,14 @@
+<!-- templates/account/logout.html -->
+{% extends "../myapp/base.html" %}
+{% block title %}logout_check{% endblock %}
+{% block header-title %}ログアウト確認{% endblock %}
+
+{% block content %}
+<h2>ログアウトしますか？</h2>
+<form method="post" action="{% url 'account_logout' %}">
+    {% csrf_token %}
+    <button type="submit">ログアウト</button>
+</form>
+<a href="{% url 'friends' %}">フレンド画面へ。</a>
+{% endblock %}
+{% block footer %} {% endblock %}

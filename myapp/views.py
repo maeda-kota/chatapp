@@ -3,7 +3,7 @@ from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
-from .forms import signupform,usernameChangeform,emailChangeform,passwordChangeform,iconChangeform,LoginForm
+from .forms import usernameChangeform,emailChangeform,iconChangeform,SignupForm
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth import login, get_user_model,authenticate
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
@@ -14,28 +14,33 @@ from .models import Friendship, FriendshipRequest, CustomUser, Message
 from django.views.generic import ListView
 from django.db.models import OuterRef, Subquery, Q
 from django.contrib.auth.forms import PasswordChangeForm
+from allauth.account.views import LoginView,LogoutView,PasswordResetView,PasswordSetView,ConfirmEmailView,EmailView,SignupView
+from allauth.account.forms import LoginForm
 
 CustomUser = get_user_model()
 
 def index(request):
     return render(request, "myapp/index.html" )
 
-class SignupView(CreateView):
-    template_name = 'myapp/signup.html'
-    form_class = signupform
-    success_url = reverse_lazy('friends')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password1')
-        user = authenticate(username=username, password=password)
-        login(self.request, user)
-        return response
+
+# class Login(LoginView):
+#     template_name = 'myapp/login.html'
+#     form_class = LoginForm
     
-class Login(LoginView):
-    template_name = 'myapp/login.html'
-    form_class = LoginForm
+
+# class SignupView(CreateView):
+#     template_name = 'myapp/signup.html'
+#     form_class = signupform
+#     success_url = reverse_lazy('friends')
+
+#     def form_valid(self, form):
+#         response = super().form_valid(form)
+#         username = form.cleaned_data.get('username')
+#         password = form.cleaned_data.get('password1')
+#         user = authenticate(username=username, password=password)
+#         login(self.request, user)
+#         return response
     
 class UserList(LoginRequiredMixin, ListView):
     model = CustomUser
@@ -46,8 +51,12 @@ class UserList(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         friends = Friendship.objects.filter(user=self.request.user)
         friend_id = friends.values_list('friend', flat=True)
+        friendship_request = FriendshipRequest.objects.filter(sender=self.request.user)
+        receiver_id = friendship_request.values_list('receiver', flat=True)
         context['friends'] = friends
         context['friend_id'] = friend_id
+        context['friendship_request'] = friendship_request 
+        context['receiver_id'] = receiver_id
         return context
     
     def get_queryset(self):
@@ -108,14 +117,36 @@ class friends(LoginRequiredMixin, ListView):
                 Q(from_user=current_user, to_user=OuterRef('friend__id')))
             ).order_by('-timestamp').values('timestamp')[:1]
 
-            friendships = Friendship.objects.filter(user=current_user).select_related('friend').annotate(
-                latest_message=Subquery(latest_message),
-                latest_message_time=Subquery(latest_message_time),
-                latest_message_sender=Subquery(latest_message_sender)
-            ).order_by('-latest_message_time')
+            query = self.request.GET.get('query')
+
+            if query : 
+                query_friend = Friendship.objects.filter(friend__username__icontains=query)
+
+                friendships = query_friend.filter(user=current_user).select_related('friend').annotate(
+                    latest_message=Subquery(latest_message),
+                    latest_message_time=Subquery(latest_message_time),
+                    latest_message_sender=Subquery(latest_message_sender)
+                ).order_by('-latest_message_time')
+                                
+            else :
+                friendships = Friendship.objects.filter(user=current_user).select_related('friend').annotate(
+                    latest_message=Subquery(latest_message),
+                    latest_message_time=Subquery(latest_message_time),
+                    latest_message_sender=Subquery(latest_message_sender)
+                ).order_by('-latest_message_time')
 
             return friendships
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        friendships = self.get_queryset()
 
+        if not friendships.exists() and not self.request.GET.get('query'):
+            context['no_query_friend'] = '現在友達はいません。ぼっちです。'
+        elif not friendships.exists() and self.request.GET.get('query'):
+            context['no_query_friend'] = 'そんな友達いませんね。'
+        return context
+    
+    
 
 class talk_room(LoginRequiredMixin, TemplateView):
     template_name = "myapp/talk_room.html"
@@ -203,8 +234,8 @@ class passwordChangeView(LoginRequiredMixin, PasswordChangeView):
         context['page_title'] = 'パスワード変更'
         return context     
 
-class Logout(LogoutView):
-    template_name = 'myapp/logout.html'
+# class Logout(LogoutView):
+#     template_name = 'myapp/logout.html'
 
 class afterChange(LoginRequiredMixin,TemplateView):
     template_name = 'myapp/afterChange.html'

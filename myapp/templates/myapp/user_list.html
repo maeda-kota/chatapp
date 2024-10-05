@@ -13,14 +13,24 @@
               {% if friend.friend.id == user.id %}
                 <span>{{ friend.created_at }}</span>
               {% endif %}
-            {% endfor %}
+            {% endfor %}  
         {% else %}
-          <form method="post" action="{% url 'send_friend_request' user.id %}">
-            {% csrf_token %}
-            <button type="submit">Send Friend Request</button>
-          </form>
+          {% if user.id in receiver_id %}
+            <span>フレンド申請済み</span>
+          {% else %}
+            <form method="post" action="{% url 'send_friend_request' user.id %}">
+              {% csrf_token %}
+              <button type="submit">Send Friend Request</button>
+            </form>
+          {% endif %}
         {% endif %}
       </li>
+    {% empty %}
+    <div class="empty-container">
+      <p class="empty">
+        このアプリに他のユーザーはいません。
+      </p>
+    </div>
     {% endfor %}
   </ul>
 {% endblock %}

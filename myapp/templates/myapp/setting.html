@@ -22,10 +22,11 @@
         <a href="{% url 'passwordChange'  %}" class="each-button">パスワード変更</a>
     </div>
     <div class="each">
-        <form action="{% url 'logout' %}" method="post">
+        <a href="{% url 'account_logout' %}" class="logout">ログアウト</a>
+        <!-- <form action="{% url 'account_logout' %}" method="post">
             {% csrf_token %}
-            <button >ログアウト</button>
-        </form>
+            <button type="submit">ログアウト</button>
+        </form> -->
     </div>
 
 

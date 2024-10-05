@@ -1,12 +1,12 @@
 from django.urls import path
 from . import views
 from django.contrib.auth.views import LoginView
-from .views import SendFriendRequest, judgeFriendRequest, UserList, FriendRequestList,Login
+from .views import SendFriendRequest, judgeFriendRequest, UserList, FriendRequestList
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('signup/', views.SignupView.as_view(), name='signup_view'),
-    path('login/', views.Login.as_view(), name='login_view'),
+    # path('signup/', views.SignupView.as_view(), name='signup_view'),
+    path('login/', views.LoginView.as_view(), name='login_view'),
     path('friends/', views.friends.as_view(), name='friends'),
     path('send_friend_request/<int:user_id>/', SendFriendRequest.as_view(), name='send_friend_request'),
     path('judge_friend_request/<int:request_id>/<str:action>/', judgeFriendRequest.as_view(), name='judge_friend_request'),
@@ -18,6 +18,6 @@ urlpatterns = [
     path('emailChange/', views.emailChangeView.as_view(), name='emailChange'),
     path('iconChange/', views.iconChangeView.as_view(), name='iconChange'),
     path('passwordChange/', views.passwordChangeView.as_view(), name='passwordChange'),
-    path('logout/', views.Logout.as_view(), name='logout'),
+    # path('logout/', views.Logout.as_view(), name='logout'),
     path('afterChange/', views.afterChange.as_view(), name='afterChange')
 ]

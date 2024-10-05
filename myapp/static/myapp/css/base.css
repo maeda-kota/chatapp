@@ -47,6 +47,7 @@ body{
     height: 64px;
     text-align: center;
     border-top: solid 1px #9b9b9b;
+    background-color: #fff;
 }
 .footer-container__item{
     display: flex;
