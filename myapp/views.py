@@ -16,6 +16,9 @@ from django.db.models import OuterRef, Subquery, Q
 from django.contrib.auth.forms import PasswordChangeForm
 from allauth.account.views import LoginView,LogoutView,PasswordResetView,PasswordSetView,ConfirmEmailView,EmailView,SignupView
 from allauth.account.forms import LoginForm
+from django.db.models.functions import Coalesce
+from django.utils import timezone
+from datetime import datetime
 
 CustomUser = get_user_model()
 
@@ -135,6 +138,7 @@ class friends(LoginRequiredMixin, ListView):
             query1 = self.request.GET.get('query1')
             query2 = self.request.GET.get('query2')
 
+
             if query1 and query2 :
                 query_friend = Friendship.objects.filter(Q(friend__username__icontains=query1) & Q(friend__email__icontains=query2))
                 
@@ -142,7 +146,7 @@ class friends(LoginRequiredMixin, ListView):
                     latest_message=Subquery(latest_message),
                     latest_message_time=Subquery(latest_message_time),
                     latest_message_sender=Subquery(latest_message_sender)
-                ).order_by('-latest_message_time')
+                ).order_by(Coalesce('latest_message_time', timezone.make_aware(datetime.min)).desc())
 
             elif query1  : 
                 query_friend = Friendship.objects.filter(friend__username__icontains=query1)
@@ -151,7 +155,7 @@ class friends(LoginRequiredMixin, ListView):
                     latest_message=Subquery(latest_message),
                     latest_message_time=Subquery(latest_message_time),
                     latest_message_sender=Subquery(latest_message_sender)
-                ).order_by('-latest_message_time')
+                ).order_by(Coalesce('latest_message_time', timezone.make_aware(datetime.min)).desc())
 
 
             elif query2 :
@@ -161,7 +165,7 @@ class friends(LoginRequiredMixin, ListView):
                     latest_message=Subquery(latest_message),
                     latest_message_time=Subquery(latest_message_time),
                     latest_message_sender=Subquery(latest_message_sender)
-                ).order_by('-latest_message_time')
+                ).order_by(Coalesce('latest_message_time', timezone.make_aware(datetime.min)).desc())
 
 
             else :
@@ -169,7 +173,7 @@ class friends(LoginRequiredMixin, ListView):
                     latest_message=Subquery(latest_message),
                     latest_message_time=Subquery(latest_message_time),
                     latest_message_sender=Subquery(latest_message_sender)
-                ).order_by('-latest_message_time')
+                ).order_by(Coalesce('latest_message_time', timezone.make_aware(datetime.min)).desc())
 
             return friendships
     
