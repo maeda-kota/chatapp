@@ -6,8 +6,9 @@
 <link rel="stylesheet" href="../../static/myapp/css/friends.css">
 {% endblock %}
 {% block content %}
-    <form action="" method="get">
-        <input name="query" value="{{ request.GET.query }}" type="text" placeholder="フレンドの名前を入力してください">
+    <form method="get">
+        <input name="query1" value="{{ request.GET.query1 }}" type="text" placeholder="フレンドの名前を入力してください">
+        <input name="query2" value="{{ request.GET.query2 }}" type="text" placeholder="メールアドレスを入力してください">
         <button type="submit">検索する</button>
     </form>
     {% for friendship in friendships %}

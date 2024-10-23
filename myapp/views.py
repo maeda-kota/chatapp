@@ -49,18 +49,34 @@ class UserList(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        friends = Friendship.objects.filter(user=self.request.user)
+        friends = Friendship.objects.filter(user=self.request.user).select_related('friend')
         friend_id = friends.values_list('friend', flat=True)
-        friendship_request = FriendshipRequest.objects.filter(sender=self.request.user)
+        friendship_request = FriendshipRequest.objects.filter(sender=self.request.user).select_related('receiver')
         receiver_id = friendship_request.values_list('receiver', flat=True)
         context['friends'] = friends
         context['friend_id'] = friend_id
         context['friendship_request'] = friendship_request 
         context['receiver_id'] = receiver_id
+
         return context
     
     def get_queryset(self):
-        return CustomUser.objects.exclude(id=self.request.user.id)
+
+        query1 = self.request.GET.get('query1')
+        query2 = self.request.GET.get('query2')
+
+        if query1 and query2 :
+            query_user = CustomUser.objects.filter(Q(username__icontains=query1) & Q(email__icontains=query2))
+
+        elif query1  : 
+            query_user = CustomUser.objects.filter(username__icontains=query1)
+
+        elif query2 :
+            query_user = CustomUser.objects.filter(email__icontains=query2)
+        else :
+            query_user = CustomUser.objects.exclude(id=self.request.user.id)
+
+        return query_user
     
 class SendFriendRequest(LoginRequiredMixin, View):
     def post(self, request, user_id):
@@ -88,9 +104,8 @@ class FriendRequestList(LoginRequiredMixin, ListView):
     context_object_name = 'received_requests'
 
     def get_queryset(self):
-        
         friends = Friendship.objects.filter(user=self.request.user).values_list('friend', flat=True)
-        return FriendshipRequest.objects.filter(receiver=self.request.user, status='pending').exclude(sender__in = friends)
+        return FriendshipRequest.objects.filter(receiver=self.request.user, status='pending').exclude(sender__in = friends).select_related('sender')
   
     
 class friends(LoginRequiredMixin, ListView):
@@ -105,7 +120,7 @@ class friends(LoginRequiredMixin, ListView):
             latest_message_sender = Message.objects.filter(
                 (Q(from_user=OuterRef('friend__id'), to_user=current_user) | 
                 Q(from_user=current_user, to_user=OuterRef('friend__id')))
-            ).order_by('-timestamp').values_list('from_user__username')[:1]
+            ).select_related('from_user').order_by('-timestamp').values_list('from_user__username')[:1]
 
             latest_message = Message.objects.filter(
                 (Q(from_user=OuterRef('friend__id'), to_user=current_user) | 
@@ -117,17 +132,38 @@ class friends(LoginRequiredMixin, ListView):
                 Q(from_user=current_user, to_user=OuterRef('friend__id')))
             ).order_by('-timestamp').values('timestamp')[:1]
 
-            query = self.request.GET.get('query')
+            query1 = self.request.GET.get('query1')
+            query2 = self.request.GET.get('query2')
 
-            if query : 
-                query_friend = Friendship.objects.filter(friend__username__icontains=query)
+            if query1 and query2 :
+                query_friend = Friendship.objects.filter(Q(friend__username__icontains=query1) & Q(friend__email__icontains=query2))
+                
+                friendships = query_friend.filter(user=current_user).select_related('friend').annotate(
+                    latest_message=Subquery(latest_message),
+                    latest_message_time=Subquery(latest_message_time),
+                    latest_message_sender=Subquery(latest_message_sender)
+                ).order_by('-latest_message_time')
+
+            elif query1  : 
+                query_friend = Friendship.objects.filter(friend__username__icontains=query1)
 
                 friendships = query_friend.filter(user=current_user).select_related('friend').annotate(
                     latest_message=Subquery(latest_message),
                     latest_message_time=Subquery(latest_message_time),
                     latest_message_sender=Subquery(latest_message_sender)
                 ).order_by('-latest_message_time')
-                                
+
+
+            elif query2 :
+                query_friend = Friendship.objects.filter(friend__email__icontains=query2)
+
+                friendships = query_friend.filter(user=current_user).select_related('friend').annotate(
+                    latest_message=Subquery(latest_message),
+                    latest_message_time=Subquery(latest_message_time),
+                    latest_message_sender=Subquery(latest_message_sender)
+                ).order_by('-latest_message_time')
+
+
             else :
                 friendships = Friendship.objects.filter(user=current_user).select_related('friend').annotate(
                     latest_message=Subquery(latest_message),
@@ -136,6 +172,7 @@ class friends(LoginRequiredMixin, ListView):
                 ).order_by('-latest_message_time')
 
             return friendships
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         friendships = self.get_queryset()

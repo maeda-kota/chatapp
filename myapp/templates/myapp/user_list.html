@@ -2,6 +2,11 @@
 
 {% block content %}
   <h2>User List</h2>
+  <form method="get">
+    <input name="query1" value="{{ request.GET.query1 }}" type="text" placeholder="ユーザーの名前を入力してください">
+    <input name="query2" value="{{ request.GET.query2 }}" type="text" placeholder="メールアドレスを入力してください">
+    <button type="submit">検索する</button>
+  </form>
   <ul>
     {% for user in users %}
       <li>
@@ -28,7 +33,7 @@
     {% empty %}
     <div class="empty-container">
       <p class="empty">
-        このアプリに他のユーザーはいません。
+        そんな名前のユーザーはいません。
       </p>
     </div>
     {% endfor %}
